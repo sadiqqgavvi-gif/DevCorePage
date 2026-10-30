@@ -561,7 +561,7 @@
     }
 
     .js .track-process {
-      height: 530svh;
+      height: 700svh;
     }
 
     .js .track-showcase {
@@ -569,7 +569,17 @@
     }
 
     .js .track-why {
-      height: 350svh;
+      height: 420svh;
+    }
+
+    .js .track-trail {
+      height: 280svh;
+    }
+
+    /* Each principle gets most of a screen of scrolling, so the list arrives one at a time */
+    .js .why-row {
+      align-content: center;
+      min-height: 62svh;
     }
   }
 
@@ -1381,8 +1391,7 @@
   }
 
   /* Image trail: the copy stays on top of whatever is passing underneath */
-  .trail-section {
-    position: relative;
+  .trail-pin {
     isolation: isolate;
     min-height: 100svh;
     overflow: hidden;
@@ -1391,7 +1400,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .trail-section {
+    .trail-pin {
       min-height: 70svh;
     }
   }

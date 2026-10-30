@@ -112,8 +112,8 @@ export function ImageTrail({
       if (auto) {
         const t = now / 1000;
         setPointer(
-          parentSize.current.width * (0.5 + 0.36 * Math.sin(t * 0.9)),
-          parentSize.current.height * (0.5 + 0.3 * Math.sin(t * 1.4 + 1)),
+          parentSize.current.width * (0.5 + 0.36 * Math.sin(t * 0.55)),
+          parentSize.current.height * (0.5 + 0.3 * Math.sin(t * 0.85 + 1)),
         );
       }
 

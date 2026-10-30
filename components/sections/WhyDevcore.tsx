@@ -33,12 +33,12 @@ export function WhyDevcore() {
         const side = index % 2 ? 1 : -1;
         const timeline = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: { trigger: row, start: "top 95%", end: "top 55%", scrub: SCRUB },
+          scrollTrigger: { trigger: row, start: "top 100%", end: "top 40%", scrub: SCRUB },
         });
         timeline
           .fromTo(row.querySelector(".why-rule"), { scaleX: 0 }, { scaleX: 1 }, 0)
-          .fromTo(row.querySelector(".why-title"), { x: side * 70, opacity: 0 }, { x: 0, opacity: 1 }, 0)
-          .fromTo(row.querySelector(".why-text"), { x: side * -40, opacity: 0 }, { x: 0, opacity: 1 }, 0.15);
+          .fromTo(row.querySelector(".why-title"), { x: side * 36, opacity: 0 }, { x: 0, opacity: 1 }, 0)
+          .fromTo(row.querySelector(".why-text"), { x: side * -20, opacity: 0 }, { x: 0, opacity: 1 }, 0.15);
       });
     });
   });
