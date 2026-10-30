@@ -324,6 +324,7 @@ uniform vec3  uAccent;
 uniform float uFocusSize;
 uniform float uDitherScale;
 uniform float uEntryScale;
+uniform float uEntryGrain;
 
 out vec4 fragColor;
 
@@ -403,7 +404,9 @@ vec3 toneScale(float t) {
 vec3 quantise(vec3 c, float threshold, float levels, float gamma) {
   float steps = max(levels - 1.0, 1.0);
   vec3 toned = toneScale(floor(pow(clamp(luma(c), 0.0, 1.0), gamma) * steps + threshold) / steps);
-  vec3 quantized = floor(c * steps + threshold) / steps;
+  // Measured from the page colour, so empty background stays empty. From zero, even a
+  // near-black page crosses the highest thresholds and prints as a lattice of dots.
+  vec3 quantized = uBackground + floor((c - uBackground) * steps + threshold) / steps;
   return mix(quantized, toned, MONO);
 }
 
@@ -474,7 +477,7 @@ void main() {
   result = mix(
     result,
     quantise(entrySource, entryThreshold, ENTRY_LEVELS, ENTRY_GAMMA),
-    entry * ENTRY_DITHER
+    entry * ENTRY_DITHER * uEntryGrain
   );
 
   fragColor = vec4(clamp(result, 0.0, 1.0), 1.0);
@@ -941,7 +944,8 @@ export function DitherHelixCarousel({
       pointerSpeed = Math.hypot(nx - pointerX, ny - pointerY);
       pointerX = nx;
       pointerY = ny;
-      aiming = true;
+      // A finger on its way to scrolling the page is not choosing a card.
+      aiming = !scrollTrack || event.pointerType === "mouse";
       if (dragFrom !== null) {
         const travel = dragFrom - event.clientY;
         dragTravel += Math.abs(travel);
@@ -1181,6 +1185,10 @@ export function DitherHelixCarousel({
       gl.uniform1f(compositeU("uFocusSize"), band);
       gl.uniform1f(compositeU("uDitherScale"), cellPx);
       gl.uniform1f(compositeU("uEntryScale"), 9.5);
+      // Off once the arrival is over, and always on phones. Some mobile GPUs deliver nothing
+      // on the second colour target, which reads as "still arriving" and would otherwise
+      // grain the whole frame for good. The cards still arrive: that happens in their own stage.
+      gl.uniform1f(compositeU("uEntryGrain"), arriving && !coarse ? 1 : 0);
       drawQuad();
       gl.activeTexture(gl.TEXTURE0);
     };
