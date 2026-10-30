@@ -22,7 +22,7 @@ export function Technology() {
       const blocks = gsap.utils.toArray<HTMLElement>(".tech-block");
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
-        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: SCRUB },
+        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: SCRUB + 0.3 },
       });
       gsap.set(blocks.slice(1), { autoAlpha: 0 });
 
@@ -30,29 +30,31 @@ export function Technology() {
         const lines = element.querySelectorAll(`.tech-lines [data-chapter="${index}"]`);
         const chips = element.querySelectorAll(`.tech-chip[data-chapter="${index}"]`);
 
-        timeline.fromTo(lines, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.2, stagger: 0.03 }, index + 0.02);
+        // Arriving and leaving each take about a third of a chapter's scroll, with short
+        // distances and no overshoot, so one capability eases into the next.
+        timeline.fromTo(lines, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, stagger: 0.04, ease: "sine.inOut" }, index + 0.02);
         timeline.fromTo(
           chips,
-          { autoAlpha: 0, scale: 0.72 },
-          { autoAlpha: 1, scale: 1, duration: 0.16, stagger: 0.03, ease: "back.out(1.6)" },
-          index + 0.12,
+          { autoAlpha: 0, scale: 0.9 },
+          { autoAlpha: 1, scale: 1, duration: 0.26, stagger: 0.04, ease: "sine.out" },
+          index + 0.08,
         );
         // Layered parallax: the chips keep drifting at a different speed from the lines.
-        timeline.fromTo(chips, { y: 22 }, { y: -22, duration: 0.9 }, index);
+        timeline.fromTo(chips, { y: 14 }, { y: -14, duration: 1 }, index);
 
         if (index > 0) {
           timeline.fromTo(
             block.children,
-            { x: 70, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.2, stagger: 0.02, ease: "power2.out" },
+            { x: 28, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.3, stagger: 0.03, ease: "sine.out" },
             index + 0.02,
           );
           timeline.set(block, { autoAlpha: 1 }, index);
         }
         if (index < blocks.length - 1) {
-          timeline.to(block.children, { x: -70, opacity: 0, duration: 0.16, stagger: 0.01 }, index + 0.8);
-          timeline.to(chips, { autoAlpha: 0, duration: 0.12 }, index + 0.84);
-          timeline.to(lines, { strokeDashoffset: -1, duration: 0.14 }, index + 0.84);
+          timeline.to(block.children, { x: -28, opacity: 0, duration: 0.26, stagger: 0.02, ease: "sine.in" }, index + 0.68);
+          timeline.to(chips, { autoAlpha: 0, duration: 0.24, ease: "sine.in" }, index + 0.74);
+          timeline.to(lines, { strokeDashoffset: -1, duration: 0.24, ease: "sine.inOut" }, index + 0.74);
           timeline.set(block, { autoAlpha: 0 }, index + 1);
         }
       });
