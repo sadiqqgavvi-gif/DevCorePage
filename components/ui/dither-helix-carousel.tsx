@@ -84,6 +84,7 @@ export interface DitherHelixCarouselProps extends Omit<
    height so consecutive cards overlap and the column resolves as one continuous
    band instead of a stack of separate tiles. */
 const CARD_H = 1.6;
+const PORTRAIT_CARD_SPAN = 1.6; // width of the facing card on a tall screen, in clip units (2 = full)
 const RADIUS = 3.8;
 const RADIUS_STEP = 0.055; // radius step per slot, or overlapping cards z-fight
 const CAMERA_Z = 10;
@@ -785,6 +786,7 @@ export function DitherHelixCarousel({
     let pointerX = -1;
     let pointerY = -1;
     let pointerSpeed = 0;
+    let aiming = !scrollTrack;
     let ticks = 0;
     let frame = 0;
     let entryStart = 0;
@@ -828,7 +830,8 @@ export function DitherHelixCarousel({
       const h = canvas.clientHeight;
       if (!w || !h) return;
       // The pipeline is several full-screen passes, so resolution is where its cost lives.
-      const dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1 : 1.25);
+      // Phones have far fewer pixels to fill, and show softness more at arm's length.
+      const dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 1.25);
       width = w;
       height = h;
       canvas.width = Math.round(w * dpr);
@@ -839,14 +842,19 @@ export function DitherHelixCarousel({
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
 
-    /** The card ratio, narrowed where the facing card would otherwise overrun a tall
-        screen. Art is cover-fitted to whatever this returns, so nothing stretches. */
-    const fitRatio = () =>
-      Math.min(
-        settings.current.cardRatio,
-        (0.9 * 2 * (width / Math.max(height, 1)) * (CAMERA_Z - RADIUS)) /
-          (focal * CARD_H),
-      );
+    /** The framing and card size for this screen. Spread is divided by the aspect ratio, so
+        on a tall screen the neighbours would land far off the edge and whip across it as the
+        column turns. Tall screens frame the helix as a square instead, which keeps every card
+        at the same place in its orbit as on a desktop, and size the cards to suit, with the
+        same on-screen proportions. */
+    const shape = () => {
+      const { cardRatio } = settings.current;
+      const aspect = width / Math.max(height, 1);
+      if (aspect >= 1) return { view: aspect, w: CARD_H * cardRatio, h: CARD_H };
+      const wide = (PORTRAIT_CARD_SPAN * (CAMERA_Z - RADIUS)) / focal;
+      const h = Math.min(CARD_H, (wide * aspect) / cardRatio);
+      return { view: 1, w: (h * cardRatio) / aspect, h };
+    };
 
     /** Screen placement for a given index in CSS pixels, together with its
         distance from the camera. The layout is columnar, so this is sufficient
@@ -858,10 +866,10 @@ export function DitherHelixCarousel({
       const z = Math.cos(angle) * (RADIUS + slot * RADIUS_STEP);
       const away = CAMERA_Z - z;
       if (away <= NEAR) return null;
-      const aspect = width / Math.max(height, 1);
+      const { view, w, h } = shape();
       const sx =
         ((Math.sin(angle) * (RADIUS + slot * RADIUS_STEP) * focal) /
-          aspect /
+          view /
           away) *
           0.5 +
         0.5;
@@ -869,12 +877,8 @@ export function DitherHelixCarousel({
       return {
         x: sx * width,
         y: sy * height,
-        halfW:
-          ((CARD_H * fitRatio() * focal) / aspect / away) *
-          0.5 *
-          width *
-          0.5,
-        halfH: ((CARD_H * focal) / away) * 0.5 * height * 0.5,
+        halfW: ((w * focal) / view / away) * 0.5 * width * 0.5,
+        halfH: ((h * focal) / away) * 0.5 * height * 0.5,
         away,
       };
     };
@@ -937,6 +941,7 @@ export function DitherHelixCarousel({
       pointerSpeed = Math.hypot(nx - pointerX, ny - pointerY);
       pointerX = nx;
       pointerY = ny;
+      aiming = true;
       if (dragFrom !== null) {
         const travel = dragFrom - event.clientY;
         dragTravel += Math.abs(travel);
@@ -996,8 +1001,8 @@ export function DitherHelixCarousel({
         twist: turn,
         rise: pitch,
       } = settings.current;
-      const ratio = fitRatio();
-      const cardW = CARD_H * ratio;
+      const ratio = settings.current.cardRatio;
+      const frameShape = shape();
 
       if (ticks++ % THEME_EVERY === 0) {
         background = readColor(getComputedStyle(canvas).backgroundColor);
@@ -1070,12 +1075,15 @@ export function DitherHelixCarousel({
       // --- hover ----------------------------------------------------------
       // Reassigned only once pointer velocity drops to deliberate speed;
       // otherwise a fast sweep would strobe the focus from card to card.
-      // Nor does focus change while the column turns under a resting cursor, which
-      // would flicker the dimming across every card that passes it.
-      const turningNow = Boolean(scrollTrack) && Math.abs(goal - progress) > 0.02;
-      if (turningNow) hovered = -1;
-      else if (pointerX >= 0 && pointerSpeed < HOVER_SETTLE)
+      // A cursor left resting on the canvas chose nothing, either: scrolling clears the
+      // focus until the pointer next moves, or each stop would break every other card
+      // into grain and each scroll would pull it back.
+      if (scrollTrack && Math.abs(goal - progress) > 0.02) {
+        hovered = -1;
+        aiming = false;
+      } else if (aiming && pointerX >= 0 && pointerSpeed < HOVER_SETTLE) {
         hovered = pick(pointerX, pointerY);
+      }
       pointerSpeed *= 0.8;
       for (let i = 0; i < count; i++) {
         const isHovered = i === hovered;
@@ -1113,9 +1121,9 @@ export function DitherHelixCarousel({
       gl.uniform1f(cardU("uAngleStep"), turn);
       gl.uniform1f(cardU("uPitch"), pitch * CARD_H);
       gl.uniform1f(cardU("uVelocity"), smoothed);
-      gl.uniform2f(cardU("uCard"), cardW, CARD_H);
+      gl.uniform2f(cardU("uCard"), frameShape.w, frameShape.h);
       gl.uniform1f(cardU("uFocal"), focal);
-      gl.uniform1f(cardU("uAspect"), width / height);
+      gl.uniform1f(cardU("uAspect"), frameShape.view);
       gl.uniform3fv(cardU("uBackground"), background);
       gl.uniform1i(cardU("uMap"), 0);
       gl.uniform1f(cardU("uEntryScale"), 9.5);
