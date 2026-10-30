@@ -121,7 +121,7 @@ export function startStage(skies: HTMLElement[], core: HTMLElement | null) {
 
     // The first frame snaps, so a page opened part-way down starts in the right place.
     let moved = firstFrame;
-    const blend = firstFrame ? 1 : 1 - Math.exp(-Math.min(deltaMs, 100) * 0.0045);
+    const blend = firstFrame ? 1 : 1 - Math.exp(-Math.min(deltaMs, 100) * 0.0035);
     for (const name of NUMERIC) {
       const gap = target[name] - pose[name];
       if (Math.abs(gap) > 0.0004) moved = true;

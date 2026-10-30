@@ -32,7 +32,7 @@ export function TextReveal3D({
   items,
   className = "",
   textClassName = "",
-  scrollDistance = "390svh",
+  scrollDistance = "480svh",
   perspective = 1000,
   radiusOffset = 0.4,
   startRotation,

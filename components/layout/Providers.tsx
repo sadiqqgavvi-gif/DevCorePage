@@ -12,7 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
     // Smooth wheel scrolling on desktop only. Touch stays entirely native.
     if (window.matchMedia(MEDIA.pointer).matches) {
-      const instance = new Lenis({ anchors: { duration: 1.6 }, autoRaf: false, lerp: 0.08, wheelMultiplier: 0.85 });
+      const instance = new Lenis({ anchors: { duration: 1.9 }, autoRaf: false, lerp: 0.065, wheelMultiplier: 0.75 });
       instance.on("scroll", ScrollTrigger.update);
       tick = (time) => instance.raf(time * 1000);
       gsap.ticker.add(tick);

@@ -8,6 +8,7 @@ export function NextStop() {
         tagline="The doors are open. Let's build it."
         signature={false}
         showProgress={false}
+        scrubDistance={4200}
         style={{ background: "#000203" }}
       />
     </section>
