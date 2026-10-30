@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Letters } from "@/components/ui/Letters";
 import { CAPABILITIES } from "@/lib/content";
-import { gsap, MEDIA, revealOnScroll, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, revealOnScroll, useGsapMedia } from "@/lib/motion";
 
 /** Where a chapter's four technologies sit around the core, as shares of the map's half-size. */
 const SPOTS = [
@@ -22,7 +22,7 @@ export function Technology() {
       const blocks = gsap.utils.toArray<HTMLElement>(".tech-block");
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
-        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: 0.4 },
+        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: SCRUB },
       });
       gsap.set(blocks.slice(1), { autoAlpha: 0 });
 
@@ -66,7 +66,7 @@ export function Technology() {
           y: 0,
           opacity: 1,
           ease: "power2.out",
-          scrollTrigger: { trigger: element, start: "top 90%", end: "top 20%", scrub: true },
+          scrollTrigger: { trigger: element, start: "top 90%", end: "top 20%", scrub: SCRUB },
         },
       );
     });

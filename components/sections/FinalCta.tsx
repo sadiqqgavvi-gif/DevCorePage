@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { SplitWords } from "@/components/ui/SplitWords";
 import { mailto, SITE } from "@/lib/content";
-import { gsap, MEDIA, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, useGsapMedia } from "@/lib/motion";
 
 export function FinalCta() {
   const root = useRef<HTMLElement>(null);
@@ -19,7 +19,7 @@ export function FinalCta() {
         {
           yPercent: 0,
           ease: "none",
-          scrollTrigger: { trigger: element, start: "top bottom", end: "top top", scrub: 0.5 },
+          scrollTrigger: { trigger: element, start: "top bottom", end: "top top", scrub: SCRUB },
         },
       );
       gsap.from(".cta-word", {

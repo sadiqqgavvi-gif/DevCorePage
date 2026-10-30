@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties } from "react";
-import { gsap, MEDIA, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, useGsapMedia } from "@/lib/motion";
 
 type TextReveal3DProps = {
   items: string[];
@@ -32,12 +32,12 @@ export function TextReveal3D({
   items,
   className = "",
   textClassName = "",
-  scrollDistance = "320svh",
+  scrollDistance = "390svh",
   perspective = 1000,
   radiusOffset = 0.4,
   startRotation,
   endRotation,
-  scrubSmoothing = 0.5,
+  scrubSmoothing = SCRUB,
   fontSize = "clamp(2.25rem, min(9vw, 14svh), 7rem)",
   fontWeight = 600,
   gap = 22,

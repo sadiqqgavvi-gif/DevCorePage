@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Letters } from "@/components/ui/Letters";
 import { PROCESS } from "@/lib/content";
-import { gsap, MEDIA, revealOnScroll, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, revealOnScroll, useGsapMedia } from "@/lib/motion";
 
 export function Process() {
   const root = useRef<HTMLElement>(null);
@@ -24,7 +24,7 @@ export function Process() {
             trigger: element,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.4,
+            scrub: SCRUB,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               const next = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
@@ -46,7 +46,7 @@ export function Process() {
           y: 0,
           opacity: 1,
           ease: "power2.out",
-          scrollTrigger: { trigger: element, start: "top 90%", end: "top 20%", scrub: true },
+          scrollTrigger: { trigger: element, start: "top 90%", end: "top 20%", scrub: SCRUB },
         },
       );
     });

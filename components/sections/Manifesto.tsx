@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Letters } from "@/components/ui/Letters";
 import { MANIFESTO } from "@/lib/content";
-import { gsap, MEDIA, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, useGsapMedia } from "@/lib/motion";
 
 export function Manifesto() {
   const root = useRef<HTMLElement>(null);
@@ -14,7 +14,7 @@ export function Manifesto() {
       const statements = gsap.utils.toArray<HTMLElement>(".mf-statement", element);
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
-        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: 0.4 },
+        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: SCRUB },
       });
 
       statements.forEach((statement, index) => {

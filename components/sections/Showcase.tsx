@@ -4,7 +4,7 @@ import { useRef, type CSSProperties } from "react";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import SculptureHero from "@/components/ui/liquid-sculpture-hero";
 import { SHOWCASE, SHOWCASE_INTRO_CARDS } from "@/lib/content";
-import { gsap, MEDIA, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, useGsapMedia } from "@/lib/motion";
 
 function GlassCards({ cards }: { cards: readonly { title: string; text: string }[] }) {
   return (
@@ -28,7 +28,7 @@ export function Showcase() {
       const panels = gsap.utils.toArray<HTMLElement>(".show-panel");
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
-        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: 0.9 },
+        scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: SCRUB },
       });
 
       panels.forEach((panel, index) => {
@@ -65,7 +65,7 @@ export function Showcase() {
         {
           clipPath: "inset(0% 0% 0% 0% round 0px)",
           ease: "none",
-          scrollTrigger: { trigger: element, start: "top 90%", end: "top top", scrub: true },
+          scrollTrigger: { trigger: element, start: "top 90%", end: "top top", scrub: SCRUB },
         },
       );
     });

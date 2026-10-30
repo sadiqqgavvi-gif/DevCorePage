@@ -12,6 +12,9 @@ if (typeof window !== "undefined") {
 
 export { gsap, ScrollTrigger };
 
+/** Seconds a scroll-driven animation takes to catch up with the page. One value, so sections stay in step. */
+export const SCRUB = 0.7;
+
 /**
  * `story` is the sticky, scroll-choreographed layout on every device, driven by native scrolling.
  * `flat` covers reduced motion and landscape phones. Keep both in sync with globals.css.
@@ -70,7 +73,7 @@ export function getLenis() {
 /** Scrolls through Lenis where it runs (desktop), otherwise natively (touch and reduced motion). */
 export function scrollToY(y: number) {
   if (lenisInstance) {
-    lenisInstance.scrollTo(y, { duration: 1 });
+    lenisInstance.scrollTo(y, { duration: 1.6 });
   } else {
     const smooth = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
     window.scrollTo({ top: y, behavior: smooth ? "smooth" : "auto" });

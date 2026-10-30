@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { STANDARDS } from "@/lib/content";
-import { gsap, MEDIA, ScrollTrigger, scrollToY, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, ScrollTrigger, scrollToY, useGsapMedia } from "@/lib/motion";
 
 const COUNT = STANDARDS.length;
 /** Portion of the section spent bringing the ring in and sending it away. */
@@ -109,7 +109,7 @@ export function Standards() {
           trigger: element,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.4,
+          scrub: SCRUB,
           onRefresh: () => {
             measure();
             render();

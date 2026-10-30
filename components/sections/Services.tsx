@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { Letters } from "@/components/ui/Letters";
 import { ServiceIcon } from "@/components/ui/ServiceIcon";
 import { mailto, SERVICES, type Service } from "@/lib/content";
-import { gsap, MEDIA, ScrollTrigger, scrollToY, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, ScrollTrigger, scrollToY, useGsapMedia } from "@/lib/motion";
 
 const COUNT = SERVICES.length;
 /** Portion of the section spent bringing the track in and sending it away. */
@@ -110,7 +110,7 @@ export function Services() {
           trigger: element,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.4,
+          scrub: SCRUB,
           onRefresh: () => {
             measure();
             render();
@@ -126,7 +126,7 @@ export function Services() {
           y: 0,
           opacity: 1,
           ease: "power2.out",
-          scrollTrigger: { trigger: element, start: "top 90%", end: "top 15%", scrub: true },
+          scrollTrigger: { trigger: element, start: "top 90%", end: "top 15%", scrub: SCRUB },
         },
       );
 

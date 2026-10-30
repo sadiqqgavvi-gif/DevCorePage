@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { PRINCIPLES, WHY_STATEMENT } from "@/lib/content";
-import { gsap, MEDIA, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, useGsapMedia } from "@/lib/motion";
 
 export function WhyDevcore() {
   const root = useRef<HTMLElement>(null);
@@ -21,7 +21,7 @@ export function WhyDevcore() {
             trigger: element.querySelector(".track-why"),
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.3,
+            scrub: SCRUB,
           },
         },
       );
@@ -33,7 +33,7 @@ export function WhyDevcore() {
         const side = index % 2 ? 1 : -1;
         const timeline = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: { trigger: row, start: "top 95%", end: "top 55%", scrub: 0.4 },
+          scrollTrigger: { trigger: row, start: "top 95%", end: "top 55%", scrub: SCRUB },
         });
         timeline
           .fromTo(row.querySelector(".why-rule"), { scaleX: 0 }, { scaleX: 1 }, 0)

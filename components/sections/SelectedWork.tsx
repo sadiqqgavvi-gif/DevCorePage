@@ -4,7 +4,7 @@ import { useRef } from "react";
 import DitherHelixCarousel from "@/components/ui/dither-helix-carousel";
 import { Letters } from "@/components/ui/Letters";
 import { SHOWCASE, WORK } from "@/lib/content";
-import { gsap, MEDIA, revealOnScroll, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, revealOnScroll, useGsapMedia } from "@/lib/motion";
 
 // The helix wraps around, and with too few cards the wrap shows inside the frame.
 const CARDS = [
@@ -30,7 +30,7 @@ export function SelectedWork() {
         xPercent: -8,
         opacity: 0.25,
         ease: "none",
-        scrollTrigger: { trigger: ".work-frame", start: "top 70%", end: "top 8%", scrub: true },
+        scrollTrigger: { trigger: ".work-frame", start: "top 70%", end: "top 8%", scrub: SCRUB },
       });
       // The frame opens from an inset panel to full-bleed as it arrives.
       gsap.fromTo(
@@ -39,7 +39,7 @@ export function SelectedWork() {
         {
           clipPath: "inset(0% 0% 0% 0% round 0px)",
           ease: "none",
-          scrollTrigger: { trigger: ".work-frame", start: "top 92%", end: "top 12%", scrub: true },
+          scrollTrigger: { trigger: ".work-frame", start: "top 92%", end: "top 12%", scrub: SCRUB },
         },
       );
     });

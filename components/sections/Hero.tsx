@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { SplitWords } from "@/components/ui/SplitWords";
 import { onReveal } from "@/lib/intro";
-import { gsap, MEDIA, useGsapMedia } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, useGsapMedia } from "@/lib/motion";
 
 const StarshipShader = dynamic(
   () => import("@/components/ui/starship-shader").then((module) => module.Component),
@@ -62,7 +62,7 @@ export function Hero() {
       gsap
         .timeline({
           defaults: { ease: "none" },
-          scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: 0.4 },
+          scrollTrigger: { trigger: element, start: "top top", end: "bottom bottom", scrub: SCRUB },
         })
         .to(".hero-title .sw-line:nth-child(1)", { xPercent: -14, yPercent: -18, duration: 0.7 }, 0)
         .to(".hero-title .sw-line:nth-child(2)", { xPercent: 14, yPercent: 10, duration: 0.7 }, 0)

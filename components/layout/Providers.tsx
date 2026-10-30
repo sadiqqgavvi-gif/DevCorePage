@@ -3,7 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 import Lenis from "lenis";
 import { MotionConfig } from "motion/react";
-import { gsap, MEDIA, ScrollTrigger, scrollToY, setLenis } from "@/lib/motion";
+import { gsap, MEDIA, SCRUB, ScrollTrigger, scrollToY, setLenis } from "@/lib/motion";
 
 export function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -12,7 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
     // Smooth wheel scrolling on desktop only. Touch stays entirely native.
     if (window.matchMedia(MEDIA.pointer).matches) {
-      const instance = new Lenis({ anchors: true, autoRaf: false, lerp: 0.11 });
+      const instance = new Lenis({ anchors: { duration: 1.6 }, autoRaf: false, lerp: 0.08, wheelMultiplier: 0.85 });
       instance.on("scroll", ScrollTrigger.update);
       tick = (time) => instance.raf(time * 1000);
       gsap.ticker.add(tick);
@@ -50,7 +50,7 @@ export function Providers({ children }: { children: ReactNode }) {
               trigger: heading.closest("section") ?? heading,
               start: "top 80%",
               end: "top 15%",
-              scrub: 0.4,
+              scrub: SCRUB,
             },
           },
         );
